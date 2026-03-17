@@ -5,7 +5,9 @@ description = "Add your description here"
 readme = "README.md"
 requires-python = ">=3.12"
 dependencies = [
+    "numpy>=2.4.3",
     "regex>=2026.1.15",
+    "tqdm>=4.67.3",
 ]
 
 [dependency-groups]
