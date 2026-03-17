@@ -45,6 +45,7 @@ uv run scripts/encode.py path/to/your/corpus destination/for/encoded/text --\
 - Training is slower than Rust/C++ implementations
 - Memory usage scales with number of unique pre-tokens
 - tiktoken mode requires loading full file into memory
+- Full test coverage is pending (as of now)
 
 ## Contributing
 ### Requirements
