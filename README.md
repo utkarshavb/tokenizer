@@ -2,7 +2,9 @@
 ![Python](https://img.shields.io/badge/python-3.10+-blue)
 ![License](https://img.shields.io/badge/license-MIT-green)
 
-This is a pure python implementation for training a Byte-Pair Encoding (BPE) tokenizer. Intended as an educational reference for the optimizations involved in BPE training and inference. This project aims to be readable, hackable, reasonably fast (much faster than any naive implementations), and faithful to real-world optimizations.
+This is a pure python, from-scratch implementation for training a Byte-Pair Encoding (BPE) tokenizer. Intended as an educational reference for the optimizations involved in BPE training and inference. This project aims to be readable, hackable, reasonably fast (much faster than any minimal implementations), but still faithful to real-world optimizations.
+
+For questions/doubts, talk to the repository using [DeepWiki](deepwiki.com/utkarshavb/tokenizer) (just replace "github.com" in the repo url with "deepwiki.com") from Devin/Cognition.
 
 ## Features
 - Fast GPT-4 style regex pre-tokenization with multiprocessing

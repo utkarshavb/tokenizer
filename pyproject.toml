@@ -1,7 +1,7 @@
 [project]
 name = "tokenizer"
 version = "0.1.0"
-description = "Add your description here"
+description = "A readable but efficient BPE tokenizer in pure Python"
 readme = "README.md"
 requires-python = ">=3.12"
 dependencies = [
