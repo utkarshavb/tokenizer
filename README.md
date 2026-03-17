@@ -1,4 +1,7 @@
 # BPE Tokenizer
+![Python](https://img.shields.io/badge/python-3.10+-blue)
+![License](https://img.shields.io/badge/license-MIT-green)
+
 This is a pure python implementation for training a Byte-Pair Encoding (BPE) tokenizer. Intended as an educational reference for the optimizations involved in BPE training and inference. This project aims to be readable, hackable, reasonably fast (much faster than any naive implementations), and faithful to real-world optimizations.
 
 ## Features
