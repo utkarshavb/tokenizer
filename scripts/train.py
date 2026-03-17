@@ -7,7 +7,7 @@ if __name__ == "__main__":
     parser = argparse.ArgumentParser()
     parser.add_argument("corpus", type=str)
     parser.add_argument("--name", type=str, required=True, help="name to give the tokenizer")
-    parser.add_argument("--out-dir", type=str, required=True)
+    parser.add_argument("--out-dir", type=str, default=".")
     parser.add_argument("-v", "--vocab-size", type=int, default=257)
     parser.add_argument("--regex-pattern", type=str, default=PAT, help="pattern for the initial coarse grained tokenization (pre-tokenization) of the corpus (default is the GPT-4 pattern)")
     parser.add_argument("--split-special-token", type=str, default=ENDOFTEXT, help="token that delimits documents in the corpus (default: `<|endoftext|>`)")
