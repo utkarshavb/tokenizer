@@ -14,10 +14,10 @@ if __name__ == "__main__":
     parser.add_argument("--special-tokens", nargs="*", type=str, default=[])
     args = parser.parse_args()
 
-    merges = train(
+    merges, special_tokens = train(
         args.corpus, vocab_size=args.vocab_size, regex_pattern=args.regex_pattern,
-        split_special_token=args.split_special_tokens, special_tokens=args.special_token
+        split_special_token=args.split_special_token, special_tokens=args.special_tokens
     )
 
     out = Path(args.out_dir)/f"{args.name}.json"
-    save_tokenizer(merges, args.regex_pattern, special_tokens=args.special_tokens, out=out)
+    save_tokenizer(merges, args.regex_pattern, special_tokens=special_tokens, out=out)

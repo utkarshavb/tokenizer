@@ -29,7 +29,7 @@ def _pop_best_pair(heap: list, pair_stats: dict[Pair, Stats]) -> Pair|None:
 def train(
     path: str|os.PathLike, vocab_size: int, regex_pattern: str=PAT,
     split_special_token: str=ENDOFTEXT, special_tokens: list[str]|None=None
-) -> list[Pair]:
+) -> tuple[list[Pair], list[str]]:
     """
     Args:
         path: path to the training corpus
@@ -93,4 +93,4 @@ def train(
 
             merges.append(merge_pair)
 
-    return merges
+    return merges, special_tokens
