@@ -2,6 +2,8 @@ import os
 import json
 from dataclasses import dataclass, field
 from collections import defaultdict
+from pathlib import Path
+import tiktoken
 
 PAT = r"""'(?i:[sdmt]|ll|ve|re)|[^\r\n\p{L}\p{N}]?+\p{L}+|\p{N}{1,3}| ?[^\s\p{L}\p{N}]++[\r\n]*|\s*[\r\n]|\s+(?!\S)|\s+"""
 ENDOFTEXT = "<|endoftext|>"
@@ -69,3 +71,27 @@ def load_tokenizer(path: str|os.PathLike) -> tuple[list[Pair], str, list[str]]:
     pat = data["pattern"]
     special_tokens = data["special_tokens"]
     return merges, pat, special_tokens
+
+def load_tiktoken_tokenizer(
+    path: str|os.PathLike, extra_specials: list[str]|None=None
+) -> tiktoken.Encoding:
+    if not isinstance(path, Path):
+        path = Path(path)
+    merges, pat, special_tokens = load_tokenizer(path)
+    if extra_specials is not None:
+        special_tokens += extra_specials
+    special_tokens = list(set(special_tokens))
+    special_token_dict = {
+        tok: 256+len(merges)+i for i, tok in enumerate(special_tokens)
+    }
+    vocab = {i: bytes([i]) for i in range(256)}
+    for i, (id1, id2) in enumerate(merges):
+        vocab[256+i] = vocab[id1]+vocab[id2]
+    mergeable_ranks = {
+        vocab[256+i]: 256+i for i in range(len(merges))
+    }
+    tokenizer = tiktoken.Encoding(
+        name=path.stem, mergeable_ranks=mergeable_ranks,
+        pat_str=pat, special_tokens=special_token_dict,
+    )
+    return tokenizer
