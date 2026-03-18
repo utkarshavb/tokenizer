@@ -1,7 +1,7 @@
 import os
 import json
 from dataclasses import dataclass, field
-from collections import defaultdict
+from collections import defaultdict, Counter
 from pathlib import Path
 import tiktoken
 
@@ -41,8 +41,7 @@ class TokenSeq:
 @dataclass(slots=True)
 class Stats:
     count: int = 0
-    # locs can potentially contain stale location for pairs
-    locs: set[int] = field(default_factory=set)
+    locs: Counter = field(default_factory=Counter) # stores index and frequency of occurrence at the index
 
 def init_pair_stats(tokseqs: list[TokenSeq]) -> defaultdict[Pair, Stats]:
     stats = defaultdict(Stats)
@@ -52,7 +51,7 @@ def init_pair_stats(tokseqs: list[TokenSeq]) -> defaultdict[Pair, Stats]:
         for i in range(1, len(seq)):
             pair: Pair = (seq[i-1], seq[i])
             stats[pair].count += count
-            stats[pair].locs.add(idx)
+            stats[pair].locs[idx] += 1
     return stats
 
 def save_tokenizer(

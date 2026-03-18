@@ -16,13 +16,12 @@ def log_time(verb: str, noun: str):
     dt = time.time()-t0
     print(f"{noun} done! Time taken: {dt:.3f} seconds\n")
 
-def _pop_best_pair(heap: list, pair_stats: dict[Pair, Stats]) -> Pair|None:
+def _pop_best_pair(heap: list, stats: dict[Pair, Stats]) -> Pair|None:
     # lazy pop as heap entries can become stale after count updates
     while heap:
         neg_c, neg_id1, neg_id2 = heappop(heap)
         merge_pair = (-neg_id1, -neg_id2)
-        stats = pair_stats[merge_pair]
-        if stats.count>0 and stats.count==-neg_c:
+        if merge_pair in stats and stats[merge_pair].count==-neg_c:
             return merge_pair
     return None
 
@@ -71,24 +70,29 @@ def train(
             stats = pair_stats[merge_pair]
             
             affected_pairs: set[Pair] = set()
-            for idx in stats.locs:
+            while stats.locs:
+                idx, _ = stats.locs.popitem()
                 tokseq = tokseqs[idx]
                 deltas = tokseq.merge(merge_pair, merge_id)
 
-                # update global stats of the affected pairs
+                # process deltas
                 for affected_pair, delta in deltas:
-                    tot_delta = delta*tokseq.count
-                    affected_stats = pair_stats[affected_pair]
-                    affected_stats.count += tot_delta
-                    if delta == +1:
-                        affected_stats.locs.add(idx)
                     affected_pairs.add(affected_pair)
+                    affected_stats = pair_stats[affected_pair]
+                    
+                    # update global stats of affected pairs
+                    affected_stats.locs[idx] += delta
+                    if affected_stats.locs[idx] <= 0:  # remove `idx` from locs
+                        affected_stats.locs.pop(idx)
+                    affected_stats.count += delta*tokseq.count
+                    if affected_stats.count <= 0:  # remove pair from global stats
+                        pair_stats.pop(affected_pair)
 
             # update heap
             for id1, id2 in affected_pairs:
-                cnt = pair_stats[(id1, id2)].count
-                if cnt < 0:
+                if (id1, id2) not in pair_stats:
                     continue
+                cnt = pair_stats[(id1, id2)].count
                 heappush(heap, (-cnt, -id1, -id2))
 
             merges.append(merge_pair)

@@ -71,10 +71,11 @@ def pre_tokenize(
     file_sz: int = os.path.getsize(path)
     num_workers = os.cpu_count() or 4
     num_chunks = 8*num_workers
-    targ_chunk_sz = (file_sz+num_chunks-1)//num_chunks
+    targ_chunk_sz = min(8*1024*1024, (file_sz+num_chunks-1)//num_chunks)
 
     # refine boundaries
-    boundaries = [i*targ_chunk_sz for i in range(num_chunks+1)]
+    boundaries = list(range(0, file_sz+targ_chunk_sz-1, targ_chunk_sz))
+    # boundaries = [i*targ_chunk_sz for i in range(num_chunks+1)]
     boundaries[-1] = file_sz
     with open(path, 'rb') as f:
         boundaries = refine_boundaries(f, file_sz, boundaries, split_special_token)
